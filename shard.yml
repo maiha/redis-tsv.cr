@@ -1,0 +1,12 @@
+name: redis-tsv
+version: 0.1.0
+
+dependencies:
+  redis:
+    git: https://github.com/stefanwille/crystal-redis.git
+    version: ~> 1.5.1
+
+authors:
+  - maiha <maiha@wota.jp>
+
+license: MIT
