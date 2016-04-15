@@ -1,23 +1,28 @@
 # redis-tsv
 
-TODO: Write a description here
+
 
 ## Installation
 
 
-TODO: Write installation instructions here
-
+```shell
+make
+cp bin/redis-tsv ~/bin/
+```
 
 ## Usage
 
+- import
 
+```
+redis-tsv import foo.tsv
+```
 
-TODO: Write usage instructions here
+- export
 
-## Development
-
-TODO: Write development instructions here
-
+```
+redis-tsv export > foo.tsv
+```
 ## Contributing
 
 1. Fork it ( https://github.com/maiha/redis-tsv/fork )
