@@ -30,4 +30,6 @@ class RedisTsv
       io.flush
     end
   end
+
+  include Bulk
 end

@@ -1,5 +1,6 @@
 require "../redis-tsv"
 require "../options"
+require "colorize"
 
 class Main
   include Options
@@ -16,24 +17,41 @@ class Main
     Example:
       #{$0} import foo.tsv
       #{$0} export > foo.tsv
+
+    Undocumented Commands:
+      count, info, ping, version
     EOF
 
   def run
     op = args.shift { die "missing command: import or export", "", usage }
 
     case op
+    when "count"
+      puts redis.count
+    when "export"
+      redis.export(STDOUT, delimiter)
     when "import"
       file = args.shift { die "missing input tsv file", "", usage }
       File.open(file) {|io| redis.import(io, delimiter) }
-    when "export"
-      redis.export(STDOUT, delimiter)
+    when "info"
+      puts redis.info
     when "keys"
       redis.raw.keys("*").map(&.to_s).sort.each do |i|
         puts i
       end
+    when "ping"
+      puts redis.raw.ping
+    when "version"
+      puts redis.version
     else
       die "unknown command: #{op}", "", usage
     end
+  rescue err : RedisTsv::ManagedWarn
+    STDERR.puts err.to_s.colorize(:yellow)
+    exit 2
+  rescue err : RedisTsv::ManagedError | Errno
+    STDERR.puts err.to_s.colorize(:red)
+    exit 1
   ensure
     redis.close
   end
