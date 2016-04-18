@@ -22,7 +22,7 @@ class RedisTsv
     end
 
     def export(io : IO, delimiter : String)
-      keys = raw.keys("*").map(&.to_s).sort
+      keys = raw.keys("*").map(&.to_s)
       vals = raw.mget(keys)
       vals.each_with_index do |val, i|
         io.puts "#{keys[i]}#{delimiter}#{val}"

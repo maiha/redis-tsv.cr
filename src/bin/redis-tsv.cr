@@ -36,8 +36,8 @@ class Main
     when "info"
       puts redis.info
     when "keys"
-      redis.raw.keys("*").map(&.to_s).sort.each do |i|
-        puts i
+      redis.raw.keys("*").each do |i|
+        puts i.to_s
       end
     when "ping"
       puts redis.raw.ping
