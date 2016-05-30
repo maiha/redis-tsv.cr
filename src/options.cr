@@ -5,6 +5,8 @@ module Options
   class OptionError < Exception
   end
 
+  @args : Array(String)?
+
   macro def args : Array(String)
     begin
       @args ||= option_parser.parse(ARGV)
@@ -66,6 +68,8 @@ module Options
     {% end %}
   end
 
+  @option_parser : OptionParser?
+  
   protected def option_parser
     @option_parser ||= new_option_parser
   end
