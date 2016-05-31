@@ -11,6 +11,11 @@ class RedisTsv
   # Yes, we expect this will happen and it's not so important.
   class ManagedWarn < Exception
   end
+
+  # instance creation
+  def self.new
+    new(host: "localhost", port: 6379)
+  end
   
   ######################################################################
   ### as class
