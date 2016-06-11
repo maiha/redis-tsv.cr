@@ -29,6 +29,33 @@ class RedisTsv
       end
       io.flush
     end
+
+    def keys(progress : Bool, count : Int32)
+      report = build_periodical_report(progress, 3.seconds)
+
+      i = 0
+      raw.each(count: count) do |key|
+        i += 1
+        report.call(i) if (i % 1000) == 0  # reduce method-call overhead
+        yield key
+      end
+    end
+
+    private def build_periodical_report(progress : Bool, interval : Time::Span)
+      return ->(i : Int32){} if progress == false
+      total = count
+      reported = Time.now
+      return ->(i : Int32){
+        now = Time.now
+        if total > 0 && reported + interval < now
+          pcent = [i * 100.0 / total, 100.0].min
+          time = now.to_s("%H:%M:%S")
+          STDERR.puts "%s [%-3.1f%%] (%d/%d)" % [time, pcent, i, total]
+          STDERR.flush
+          reported = now
+        end
+      }
+    end      
   end
 
   include Bulk

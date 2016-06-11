@@ -15,10 +15,10 @@ class Redis
     # ```
     # redis.each { |key| p key }
     # redis.each(match: "foo:*") { |key| p key }
-    # redis.each(count: 100) { |key| p key }
+    # redis.each(count: 1000) { |key| p key }
     # ```
     
-    def each(match = "*", count = nil)
+    def each(match = "*", count = 1000)
       idx = 0
       while true
         idx, keys = scan(idx, match, count)

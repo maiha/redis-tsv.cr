@@ -90,10 +90,10 @@ module Options
     end
   end
 
-  protected def die(*args)
-    args.each do |arg|
-      STDERR.puts arg
-    end
+  protected def die(reason : String)
+    STDERR.puts reason.colorize(:red)
+    STDERR.puts ""
+    STDERR.puts usage
     STDERR.flush
     exit -1
   end
