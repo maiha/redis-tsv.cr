@@ -34,10 +34,10 @@ class RedisTsv
       report = build_periodical_report(progress, 3.seconds)
 
       i = 0
-      raw.each(count: count) do |key|
-        i += 1
-        report.call(i) if (i % 1000) == 0  # reduce method-call overhead
-        yield key
+      raw.each_keys(count: count) do |keys|
+        i += keys.size
+        yield keys
+        report.call(i)
       end
     end
 

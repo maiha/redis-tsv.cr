@@ -41,8 +41,8 @@ class Main
     when "info"
       puts redis.info
     when "keys"
-      redis.keys(progress: !quiet, count: count) do |key|
-        STDOUT.puts key
+      redis.keys(progress: !quiet, count: count) do |keys|
+        STDOUT.puts keys.join("\n")
       end
     when "ping"
       puts redis.raw.ping

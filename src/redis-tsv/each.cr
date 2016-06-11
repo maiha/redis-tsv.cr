@@ -19,6 +19,29 @@ class Redis
     # ```
     
     def each(match = "*", count = 1000)
+      each_keys(match: match, count: count) do |keys|
+        keys.each do |key|
+          yield key
+        end
+      end
+    end
+
+    # EACH_KEYS is same as EACH except this processes multiple keys at once.
+    #
+    # **Options**:
+    # see SCAN
+    #
+    # **Return value**: Nil
+    #
+    # Example:
+    #
+    # ```
+    # redis.each_keys { |keys| p keys }
+    # redis.each_keys(match: "foo:*") { |keys| p keys }
+    # redis.each_keys(count: 1000) { |keys| p keys }
+    # ```
+
+    def each_keys(match = "*", count = 1000)
       idx = 0
       while true
         idx, keys = scan(idx, match, count)
@@ -29,9 +52,7 @@ class Redis
         unless keys.is_a?(Array)
           raise "scan failed due to invalid keys: expected Array but got `#{keys.class}'"
         end
-        keys.each do |key|
-          yield key.to_s
-        end
+        yield keys
         break if idx == 0
       end        
     end
