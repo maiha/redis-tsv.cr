@@ -21,11 +21,18 @@ class RedisTsv
       end
     end
 
-    def export(io : IO, delimiter : String)
-      keys = raw.keys("*").map(&.to_s)
-      vals = raw.mget(keys)
-      vals.each_with_index do |val, i|
-        io.puts "#{keys[i]}#{delimiter}#{val}"
+    def export(io : IO, delimiter : String, progress : Bool, count : Int32)
+      report = build_periodical_report(progress, 3.seconds)
+
+      cnt = 0
+      raw.each_keys(count: count) do |keys|
+        vals = raw.mget(keys)
+        buf = String.build {|b|
+          keys.zip(vals){ |k,v| b << "#{k}#{delimiter}#{v}\n" }
+        }
+        io.puts buf
+        cnt += keys.size
+        report.call(cnt)
       end
       io.flush
     end

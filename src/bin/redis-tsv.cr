@@ -34,7 +34,7 @@ class Main
     when "count"
       puts redis.count
     when "export"
-      redis.export(STDOUT, delimiter)
+      redis.export(STDOUT, delimiter, progress: !quiet, count: count)
     when "import"
       file = args.shift { die "missing input tsv file" }
       File.open(file) {|io| redis.import(io, delimiter) }

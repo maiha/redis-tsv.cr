@@ -13,7 +13,7 @@ import and export data from Redis in TSV format
 
 - [x] `keys` should use `SCAN` rather than `KEYS *`
 - [ ] `import` should use `SCAN` rather than `KEYS *`
-- [ ] `export` should use `SCAN` rather than `KEYS *`
+- [x] `export` should use `SCAN` rather than `KEYS *`
 
 ## Installation
 
@@ -27,7 +27,7 @@ cp bin/redis-tsv ~/bin/
 
 ## Usage
 
-### migration
+### Bulk operations
 
 - import
 
@@ -48,6 +48,17 @@ redis-tsv -d, export > foo.csv
 ```
 redis-tsv keys > keys.list
 ```
+
+#### options
+
+- `-c` grows performance, but uses much memory resource.
+
+```
+redis-tsv export -c 1000  > foo.tsv  # 1m13s (default)
+redis-tsv export -c 10000 > foo.tsv  # 7m28s (6 times faster)
+```
+(entry count: 10M)
+
 
 ### information
 

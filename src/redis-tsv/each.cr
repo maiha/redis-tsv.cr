@@ -52,7 +52,7 @@ class Redis
         unless keys.is_a?(Array)
           raise "scan failed due to invalid keys: expected Array but got `#{keys.class}'"
         end
-        yield keys
+        yield keys.map(&.to_s)  # `Redis::RedisValue` to `String`
         break if idx == 0
       end        
     end
