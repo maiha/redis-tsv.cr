@@ -8,7 +8,7 @@ class Main
   option host  : String, "-h HOST", "--host=HOST", "redis host", "localhost"
   option port  : Int32 , "-p PORT", "--port=PORT", "redis port", 6379
   option sep   : String, "-d STRING", "--delimiter=STRING", "default is TAB", "\t"
-  option count : Int32 , "-c 1000", "--count=1000", "bulk count passed to Redis SCAN command", 1000
+  option count : Int32 , "-c 1000", "--count=1000", "operation bulk size (also used in SCAN)", 1000
   option quiet : Bool  , "-q", "--quiet", "suppress progress reporting", false
   
   usage <<-EOF
@@ -42,6 +42,7 @@ class Main
       puts redis.info
     when "keys"
       redis.keys(progress: !quiet, count: count) do |keys|
+        next if keys.empty?
         STDOUT.puts keys.join("\n")
       end
     when "ping"

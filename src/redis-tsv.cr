@@ -28,4 +28,5 @@ class RedisTsv
   end
 end
 
+require "./periodical"
 require "./redis-tsv/*"

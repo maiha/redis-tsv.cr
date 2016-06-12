@@ -11,11 +11,12 @@ end
 class RedisTsv
   module Bulk
     def import(io : IO, delimiter : String, progress : Bool, count : Int32)
-      report = build_periodical_report(progress, 3.seconds, ->{count_line(io)})
+      reporter = Periodical.reporter(progress, 3.seconds, ->{count_line(io)})
       
       lines = [] of String
       flush = ->(i : Int32){
-        regex  = /#{delimiter}/                                             
+        return if lines.empty?
+        regex = /#{delimiter}/                                             
         raw.pipelined do |pipeline|
           lines.each do |line|
             k, v = line.split(regex, 2)
@@ -23,7 +24,7 @@ class RedisTsv
           end
         end
         lines.clear
-        report.call(i)
+        reporter.report(i)
       }
       
       cnt = 0
@@ -35,34 +36,32 @@ class RedisTsv
         end
       end
       flush.call(cnt)
+      reporter.done
     end
 
     def export(io : IO, delimiter : String, progress : Bool, count : Int32)
-      report = build_periodical_report(progress, 3.seconds, ->{self.count})
-
-      cnt = 0
-      raw.each_keys(count: count) do |keys|
-        next if keys.size == 0
+      keys(progress, count) do |keys|
+        next if keys.empty?
         vals = raw.mget(keys)
         buf = String.build {|b|
           keys.zip(vals){ |k,v| b << "#{k}#{delimiter}#{v}\n" }
         }
         io.puts buf
-        cnt += keys.size
-        report.call(cnt)
       end
       io.flush
     end
 
     def keys(progress : Bool, count : Int32)
-      report = build_periodical_report(progress, 3.seconds, ->{self.count})
+      redis = self
+      reporter = Periodical.reporter(progress, 3.seconds, ->(){redis.count})
 
       i = 0
       raw.each_keys(count: count) do |keys|
         i += keys.size
         yield keys
-        report.call(i)
+        reporter.report(i)
       end
+      reporter.done
     end
 
     private def count_line(io : IO) : Int32
@@ -71,22 +70,6 @@ class RedisTsv
       io.rewind
       return cnt
     end
-
-    private def build_periodical_report(progress : Bool, interval : Time::Span, total_func : -> Int32)
-      return ->(i : Int32){} if progress == false
-      total = total_func.call
-      reported = Time.now
-      return ->(i : Int32){
-        now = Time.now
-        if total > 0 && reported + interval < now
-          pcent = [i * 100.0 / total, 100.0].min
-          time = now.to_s("%H:%M:%S")
-          STDERR.puts "%s [%-3.1f%%] (%d/%d)" % [time, pcent, i, total]
-          STDERR.flush
-          reported = now
-        end
-      }
-    end      
   end
 
   include Bulk
