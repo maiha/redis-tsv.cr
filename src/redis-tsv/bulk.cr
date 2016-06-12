@@ -26,6 +26,7 @@ class RedisTsv
 
       cnt = 0
       raw.each_keys(count: count) do |keys|
+        next if keys.size == 0
         vals = raw.mget(keys)
         buf = String.build {|b|
           keys.zip(vals){ |k,v| b << "#{k}#{delimiter}#{v}\n" }
