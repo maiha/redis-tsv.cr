@@ -3,7 +3,7 @@ require "redis"
 class RedisTsv
   module Stest
     def stest(prefix : String, count : Int32)
-      reporter = Periodical.reporter(true, 3.seconds, ->{count})
+      reporter = Periodical.reporter(3.seconds, ->{count})
 
       one_test = ->(i : Int32) {
         key = "#{prefix}#{i}"

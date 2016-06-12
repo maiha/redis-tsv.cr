@@ -19,8 +19,12 @@ class RedisTsv
         regex = /#{delimiter}/                                             
         raw.pipelined do |pipeline|
           lines.each do |line|
-            k, v = line.split(regex, 2)
-            pipeline.set(k, v)
+            ary = line.split(regex, 2)
+            if ary.size == 2
+              pipeline.set(ary[0], ary[1])
+            else
+              # skip
+            end
           end
         end
         lines.clear

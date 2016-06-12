@@ -1,10 +1,19 @@
 module Periodical
+  def self.reporter(interval : Time::Span, total_func : -> Int32)
+    total = total_func.call
+    if total > 0
+      return Reporter.new(interval, total) 
+    else
+      return Nop.new
+    end
+  end
+
   def self.reporter(enable : Bool, interval : Time::Span, total_func : -> Int32)
     if enable
-      total = total_func.call
-      return Reporter.new(interval, total) if total > 0
+      return reporter(interval, total_func)
+    else
+      return Nop.new
     end
-    return Nop.new
   end
 
   class Nop
