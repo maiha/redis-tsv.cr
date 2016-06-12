@@ -12,7 +12,7 @@ import and export data from Redis in TSV format
 ## TODO
 
 - [x] `keys` should use `SCAN` rather than `KEYS *`
-- [ ] `import` should use `SCAN` rather than `KEYS *`
+- [x] `import` should set data by degrees not at once
 - [x] `export` should use `SCAN` rather than `KEYS *`
 
 ## Installation
@@ -68,10 +68,6 @@ util commands for easy access to INFO
 - `version` : show the redis version
 - `ping` : execute PING command
 - `info` (INFO result itself)
-
-## NOTE
-
-- In current version, KEYS command is used. Please be careful in prod.
 
 ## Contributing
 

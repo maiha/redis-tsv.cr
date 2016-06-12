@@ -10,19 +10,35 @@ end
 
 class RedisTsv
   module Bulk
-    def import(io : IO, delimiter : String)
-      raw.pipelined do |pipeline|
-        io.each_line do |line|
-          ary = line.split(/#{delimiter}/, 2)
-          key = ary[0]
-          val = ary[1]
-          pipeline.set(key, val)
+    def import(io : IO, delimiter : String, progress : Bool, count : Int32)
+      report = build_periodical_report(progress, 3.seconds, ->{count_line(io)})
+      
+      lines = [] of String
+      flush = ->(i : Int32){
+        regex  = /#{delimiter}/                                             
+        raw.pipelined do |pipeline|
+          lines.each do |line|
+            k, v = line.split(regex, 2)
+            pipeline.set(k, v)
+          end
+        end
+        lines.clear
+        report.call(i)
+      }
+      
+      cnt = 0
+      io.each_line do |line|
+        cnt += 1
+        lines << line.chomp
+        if cnt % count == 0
+          flush.call(cnt)
         end
       end
+      flush.call(cnt)
     end
 
     def export(io : IO, delimiter : String, progress : Bool, count : Int32)
-      report = build_periodical_report(progress, 3.seconds)
+      report = build_periodical_report(progress, 3.seconds, ->{self.count})
 
       cnt = 0
       raw.each_keys(count: count) do |keys|
@@ -39,7 +55,7 @@ class RedisTsv
     end
 
     def keys(progress : Bool, count : Int32)
-      report = build_periodical_report(progress, 3.seconds)
+      report = build_periodical_report(progress, 3.seconds, ->{self.count})
 
       i = 0
       raw.each_keys(count: count) do |keys|
@@ -49,9 +65,16 @@ class RedisTsv
       end
     end
 
-    private def build_periodical_report(progress : Bool, interval : Time::Span)
+    private def count_line(io : IO) : Int32
+      cnt = 0
+      io.each_line{|line| cnt+=1}
+      io.rewind
+      return cnt
+    end
+
+    private def build_periodical_report(progress : Bool, interval : Time::Span, total_func : -> Int32)
       return ->(i : Int32){} if progress == false
-      total = count
+      total = total_func.call
       reported = Time.now
       return ->(i : Int32){
         now = Time.now
