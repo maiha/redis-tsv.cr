@@ -9,6 +9,7 @@ class Main
   option port  : Int32 , "-p PORT", "--port=PORT", "redis port", 6379
   option sep   : String, "-d STRING", "--delimiter=STRING", "default is TAB", "\t"
   option count : Int32 , "-c 1000", "--count=1000", "operation bulk size (also used in SCAN)", 1000
+  option pass  : String?, "-a PASS", "--auth=PASS", "password to use when connecting to the server", nil
   option quiet : Bool  , "-q", "--quiet", "suppress progress reporting", false
   
   usage <<-EOF
@@ -61,6 +62,7 @@ class Main
     exit 2
   rescue err : RedisTsv::ManagedError | Errno
     STDERR.puts err.to_s.colorize(:red)
+    suggest_for_error(err)
     exit 1
   ensure
     redis.close
@@ -69,9 +71,16 @@ class Main
   protected def redis
     case @redis
     when Nil
-      @redis = RedisTsv.new(host, port)
+      @redis = RedisTsv.new(host, port, pass)
     else
       @redis.not_nil!
+    end
+  end
+
+  private def suggest_for_error(err)
+    case err.to_s
+    when /NOAUTH Authentication required/
+      STDERR.puts "try `auth` option: '#{$0} --auth XXX'"
     end
   end
 end

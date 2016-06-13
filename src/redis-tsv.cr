@@ -23,8 +23,8 @@ class RedisTsv
   getter! raw
   delegate close, raw
 
-  def initialize(host, port)
-    @raw = Redis.new(host, port)
+  def initialize(host, port, password = nil)
+    @raw = Redis.new(host: host, port: port, password: password)
   end
 end
 
