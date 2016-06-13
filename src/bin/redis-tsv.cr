@@ -60,7 +60,7 @@ class Main
   rescue err : RedisTsv::ManagedWarn
     STDERR.puts err.to_s.colorize(:yellow)
     exit 2
-  rescue err : RedisTsv::ManagedError | Errno
+  rescue err
     STDERR.puts err.to_s.colorize(:red)
     suggest_for_error(err)
     exit 1
