@@ -25,7 +25,7 @@ class Main
       #{$0}     keys > keys.list
 
     Other utility commands:
-      count, info, ping, version
+      count, info, role, ping, version
     EOF
 
   def run
@@ -41,6 +41,8 @@ class Main
       File.open(file) {|io| redis.import(io, sep, progress: !quiet, count: count) }
     when "info"
       puts redis.info
+    when "role"
+      puts redis.role
     when "keys"
       redis.keys(progress: !quiet, count: count) do |keys|
         next if keys.empty?
