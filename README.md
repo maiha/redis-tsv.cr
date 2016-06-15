@@ -8,6 +8,8 @@ import and export data from Redis in TSV format
 % redis-tsv keys > keys.list
 ```
 
+- Crystal: 0.18.0
+
 ## Benchmark
 
 - Bench: import, export and keys with count option (default: 1000)
