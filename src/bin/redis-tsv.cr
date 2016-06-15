@@ -11,8 +11,11 @@ class Main
   option count : Int32 , "-c 1000", "--count=1000", "operation bulk size (also used in SCAN)", 1000
   option pass  : String?, "-a PASS", "--auth=PASS", "password to use when connecting to the server", nil
   option quiet : Bool  , "-q", "--quiet", "suppress progress reporting", false
+  option help  : Bool  , "-H", "--help", "show this help", false
   
   usage <<-EOF
+    redis-tsv version 0.2.1
+
     Usage: #{$0} (import|export|keys) [file]
 
     Options:
@@ -29,6 +32,12 @@ class Main
     EOF
 
   def run
+    args                        # kick parse!
+    if help
+      STDERR.puts usage
+      exit 0
+    end
+
     op = args.shift { die "missing command: import or export" }
 
     case op
