@@ -9,6 +9,7 @@ import and export data from Redis in TSV format
 ```
 
 - Crystal: 0.18.0
+- Binary: https://github.com/maiha/redis-tsv.cr/releases
 
 ## Benchmark
 
