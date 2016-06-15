@@ -6,6 +6,15 @@ class RedisTsv
       raw.string_command(["INFO"])
     end
 
+    def role
+      case info
+      when /^role:(.*?)$/m
+        return $1.chomp
+      else
+        raise ManagedError.new("Not Found (broken INFO)")
+      end
+    end
+    
     def version
       case info
       when /^redis_version:(.*?)$/m

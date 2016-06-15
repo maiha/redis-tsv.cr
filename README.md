@@ -103,6 +103,12 @@ util commands for easy access to INFO
 3.0.6
 ```
 
+- `role` : show the role of replication
+```
+% redis-tsv role
+master
+```
+
 - `ping` : execute PING command
 ```
 % redis-tsv ping
