@@ -8,8 +8,8 @@ import and export data from Redis in TSV format
 % redis-tsv keys > keys.list
 ```
 
-- Crystal: 0.18.0
-- Binary: https://github.com/maiha/redis-tsv.cr/releases
+- crystal: 0.20.0
+- linxu x86_64 binary: https://github.com/maiha/redis-tsv.cr/releases
 
 ## Benchmark
 
@@ -35,13 +35,6 @@ import and export data from Redis in TSV format
 ...
 10000000        10000000
 ```
-
-## TODO
-
-- [x] `keys` should use `SCAN` rather than `KEYS *`
-- [x] `import` should set data by degrees not at once
-- [x] `export` should use `SCAN` rather than `KEYS *`
-- [x] add spec about bulk operations
 
 ## Installation
 
@@ -133,6 +126,20 @@ redis_git_sha1:00000000
 % crystal spec
 ```
 
+## TODO
+
+#### v0.3.0
+
+- [ ] `import` to redis-cluster
+
+#### v0.4.0
+
+- [ ] `keys` from redis-cluster
+
+#### v0.5.0
+
+- [ ] `export` from redis-cluster
+
 ## Contributing
 
 1. Fork it ( https://github.com/maiha/redis-tsv.cr/fork )
@@ -143,4 +150,4 @@ redis_git_sha1:00000000
 
 ## Contributors
 
-- [[maiha]](https://github.com/maiha) maiha - creator, maintainer
+- [maiha](https://github.com/maiha) maiha - creator, maintainer

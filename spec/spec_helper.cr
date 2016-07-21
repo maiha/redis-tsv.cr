@@ -9,7 +9,7 @@ def flushdb
 end
 
 def import(lines : Array(String), delimiter : String, progress : Bool = false, count : Int32 = 1000)
-  io = MemoryIO.new
+  io = IO::Memory.new
   lines.each do |line|
     io.puts line
   end
@@ -21,7 +21,7 @@ def import(lines : Array(String), delimiter : String, progress : Bool = false, c
 end
 
 def export(delimiter : String, progress : Bool = false, count : Int32 = 1000)
-  io = MemoryIO.new
+  io = IO::Memory.new
   redis = RedisTsv.new
   redis.export(io: io, delimiter: delimiter, progress: progress, count: count)
   redis.close

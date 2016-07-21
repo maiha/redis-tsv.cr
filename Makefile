@@ -3,10 +3,12 @@ LINK_FLAGS = --link-flags "-static"
 SRCS = ${wildcard src/bin/*.cr}
 PROGS = $(SRCS:src/bin/%.cr=%)
 
-.PHONY : all build clean bin
+.PHONY : all build clean bin test spec
 .PHONY : ${PROGS}
 
 all: build
+
+test: build spec
 
 build: bin ${PROGS}
 
