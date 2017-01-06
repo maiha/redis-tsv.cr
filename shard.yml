@@ -3,8 +3,8 @@ version: 0.2.1
 
 dependencies:
   redis:
-    git: https://github.com/stefanwille/crystal-redis.git
-    version: 1.6.7
+    github: stefanwille/crystal-redis
+    version: 1.7.1
 
 authors:
   - maiha <maiha@wota.jp>

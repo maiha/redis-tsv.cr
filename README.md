@@ -8,7 +8,7 @@ import and export data from Redis in TSV format
 % redis-tsv keys > keys.list
 ```
 
-- crystal: 0.20.0
+- crystal: 0.20.4
 - linxu x86_64 binary: https://github.com/maiha/redis-tsv.cr/releases
 
 ## Benchmark
